@@ -19,9 +19,6 @@ Encrypted session abstraction with TLS 1.3-style handshake and AES-GCM transport
 dotnet add package SecureStream
 ```
 
-Or view on NuGet:  
-[https://www.nuget.org/packages/SecureStream](https://www.nuget.org/packages/SecureStream)
-
 ## Usage
 
 ### Setup and connection
@@ -59,10 +56,8 @@ public interface ISecureTransportAdapter<TAddress>
 
 This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
-## Repository
 
-GitHub: [https://github.com/m9studio/SecureStream](https://github.com/m9studio/SecureStream)
+## Notes
 
-## NuGet Author
-
-Published on NuGet by: [mina987](https://www.nuget.org/profiles/M9Studio)
+- Supports .NET 8.0+
+- Cross-platform: Windows, Linux, macOS
