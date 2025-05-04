@@ -18,15 +18,16 @@
 
             Console.ReadLine();
         }
-
+        static Random Random = new Random();
 
         private static void Server_OnSecureSessionEstablished(SecureSession<int> session)
         {
-            //Console.WriteLine("server send:      " + BytesToHex([]) + " : " + session.Send([]));
+            /*byte[] arr2 = GenerateRandomBytes(16);
+            Console.WriteLine("server send:      " + BytesToHex(arr2) + " : " + session.Send(arr2));*/
             while (true)
             {
                 //отправляем
-                byte[] arr = GenerateRandomBytes(16);
+                byte[] arr = GenerateRandomBytes(Random.Next(65)/*16*/);
                 Console.WriteLine("server send:      " + BytesToHex(arr) + " : " + session.Send(arr));
 
                 //ждем  ответа от клиента
@@ -42,11 +43,11 @@
                 Console.WriteLine("server -> client: " + BytesToHex(session.Receive()));
 
                 //задержка
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
 
 
                 //отправляем
-                byte[] arr = GenerateRandomBytes(16);
+                byte[] arr = GenerateRandomBytes(Random.Next(65));
                 Console.WriteLine("client send:      " + BytesToHex(arr) + " : " + session.Send(arr));
             }
         }

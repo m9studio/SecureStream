@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Text;
 
 namespace M9Studio.SecureStream
 {
@@ -8,7 +7,7 @@ namespace M9Studio.SecureStream
         private readonly ISecureTransportAdapter<TAddress> _adapter;
         private readonly ConcurrentDictionary<TAddress, SecureSession<TAddress>> _sessions = new();
 
-        public event Action<SecureSession<TAddress>> OnSecureSessionEstablished;
+        public event Action<SecureSession<TAddress>>? OnSecureSessionEstablished;
 
         public SecureChannelManager(ISecureTransportAdapter<TAddress> adapter)
         {
@@ -19,55 +18,57 @@ namespace M9Studio.SecureStream
 
         private void HandleConnection(TAddress address)
         {
+            if (_sessions.ContainsKey(address))
+            {
+                Console.WriteLine($"[SecureChannelManager] Session with {address} already exists. Ignoring duplicate.");
+                return;
+            }
             Task.Run(() =>
             {
                 try
                 {
-                    // Получаем первый пакет от удалённой стороны
                     byte[] firstPacket = _adapter.ReceiveFrom(address);
 
-                    SecureSession<TAddress> session;
-
-                    if (IsHandshakePacket(firstPacket))
+                    if (IsX25519PublicKey(firstPacket))
                     {
-                        // Это HELLO → обычное рукопожатие
-                        session = new SecureSession<TAddress>(_adapter, address);
+                        var session = new SecureSession<TAddress>(_adapter, address);
+                        _sessions[address] = session;
+
+                        session.PerformHandshakeAsServer(firstPacket);
+
+                        OnSecureSessionEstablished?.Invoke(session);
                     }
                     else
                     {
-                        // Это уже рабочее сообщение → буферизуем
-                        session = new SecureSession<TAddress>(_adapter, address, firstPacket);
+                        // Лог: некорректный формат handshake
                     }
-
-                    _sessions[address] = session;
-
-                    // Только теперь уведомляем внешнюю логику
-                    OnSecureSessionEstablished?.Invoke(session);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Обработка ошибок подключения (опционально)
+                    // Лог ошибок (опционально)
                 }
             });
         }
 
         public SecureSession<TAddress> Connect(TAddress address)
         {
-            // Отправляем явное handshake-сообщение
-            byte[] handshakeInit = Encoding.UTF8.GetBytes("HELLO");
-            _adapter.SendTo(handshakeInit, address);
+            Console.WriteLine($"[SecureChannelManager] Connecting to {address}...");
 
             var session = new SecureSession<TAddress>(_adapter, address);
             _sessions[address] = session;
 
+            session.PerformHandshakeAsClient();
+
+            Console.WriteLine($"[SecureChannelManager] Handshake complete with {address}");
+
+            OnSecureSessionEstablished?.Invoke(session);
+
             return session;
         }
 
-        private bool IsHandshakePacket(byte[] data)
+        private bool IsX25519PublicKey(byte[] data)
         {
-            return data != null &&
-                   data.Length == 5 &&
-                   Encoding.UTF8.GetString(data) == "HELLO";
+            return data != null && data.Length == 32; // X25519 pubkey = 32 bytes
         }
     }
 }

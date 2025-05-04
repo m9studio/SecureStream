@@ -19,12 +19,12 @@
 
         public byte[] ReceiveFrom(int address)
         {
-            //Console.WriteLine($"[{id}] Waiting for data from {address}...");
+            Console.WriteLine($"[{id}] Waiting for data from {address}...");
             while (true)
             {
                 if (queue.ContainsKey(address) && queue[address]?.Count > 0)
                 {
-                    //Console.WriteLine($"[{id}] Received from {address}");
+                    Console.WriteLine($"[{id}] Received from {address}");
                     return queue[address].Dequeue();
                 }
                 Thread.Sleep(10);
@@ -33,7 +33,7 @@
 
         public bool SendTo(byte[] buffer, int address)
         {
-            //Console.WriteLine($"[{id}] SendTo {address}, length = {buffer.Length}");
+            Console.WriteLine($"[{id}] SendTo {address}, length = {buffer.Length}");
             if (connect.ContainsKey(address))
             {
                 connect[address].AddCache(buffer, id);
@@ -51,11 +51,11 @@
             {
                 queue.Add(address, new Queue<byte[]>());
                 OnConnected?.Invoke(address);
-                //Console.WriteLine($"[{id}] OnConnected: {address}");
+                Console.WriteLine($"[{id}] OnConnected: {address}");
             }
 
             queue[address].Enqueue(buffer);
-            //Console.WriteLine($"[{id}] Enqueued message from {address}");
+            Console.WriteLine($"[{id}] Enqueued message from {address}");
         }
     }
 }
