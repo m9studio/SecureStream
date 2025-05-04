@@ -2,25 +2,31 @@
 
 namespace M9Studio.ShieldSocket
 {
-    internal class SecureSession
+    public class SecureSession
     {
-        public EndPoint RemoteEndPoint { get; }
+        private readonly ISecureTransportAdapter _adapter;
+        private readonly EndPoint _remoteEP;
 
-        public SecureSession(EndPoint remoteEP)
+        public SecureSession(ISecureTransportAdapter adapter, EndPoint remoteEP)
         {
-            RemoteEndPoint = remoteEP;
+            _adapter = adapter;
+            _remoteEP = remoteEP;
         }
 
-        public byte[] Encrypt(byte[] data)
+        public bool Send(byte[] plainData)
         {
-            // TODO: шифрование
-            return data;
+            byte[] encrypted = Encrypt(plainData);
+            return _adapter.SendTo(encrypted, _remoteEP);
         }
 
-        public byte[] Decrypt(byte[] data)
+        public byte[] Receive()
         {
-            // TODO: расшифровка
-            return data;
+            byte[] encrypted = _adapter.ReceiveFrom(_remoteEP);
+            return Decrypt(encrypted);
         }
+
+        private byte[] Encrypt(byte[] data) => data;  // Заглушка
+        private byte[] Decrypt(byte[] data) => data;  // Заглушка
     }
+
 }
