@@ -2,12 +2,14 @@
 
 namespace M9Studio.SecureStream
 {
-    public interface ISecureTransportAdapter
+    public interface ISecureTransportAdapter<TAddress>
     {
-        event Action<EndPoint> OnConnected;
-        event Action<EndPoint> OnDisconnected;
+        event Action<TAddress> OnConnected;
+        event Action<TAddress> OnDisconnected;
 
-        bool SendTo(byte[] buffer, EndPoint remoteEP);
-        byte[] ReceiveFrom(EndPoint remoteEP);
+        bool SendTo(byte[] buffer, TAddress address);
+        byte[] ReceiveFrom(TAddress address);
     }
+
+
 }

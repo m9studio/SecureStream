@@ -3,47 +3,45 @@ using System.Net;
 
 namespace M9Studio.SecureStream
 {
-    public class SecureChannelManager
+    public class SecureChannelManager<TAddress>
     {
-        private readonly ISecureTransportAdapter _adapter;
-        private readonly ConcurrentDictionary<EndPoint, SecureSession> _sessions = new();
+        private readonly ISecureTransportAdapter<TAddress> _adapter;
+        private readonly ConcurrentDictionary<TAddress, SecureSession<TAddress>> _sessions = new();
 
-        public event Action<SecureSession> OnSecureSessionEstablished;
+        public event Action<SecureSession<TAddress>> OnSecureSessionEstablished;
 
-        public SecureChannelManager(ISecureTransportAdapter adapter)
+        public SecureChannelManager(ISecureTransportAdapter<TAddress> adapter)
         {
             _adapter = adapter;
-            _adapter.OnConnected += HandleIncomingConnection;
-            _adapter.OnDisconnected += remoteEP => _sessions.TryRemove(remoteEP, out _);
+            _adapter.OnConnected += HandleConnection;
+            _adapter.OnDisconnected += address => _sessions.TryRemove(address, out _);
         }
 
-        private void HandleIncomingConnection(EndPoint remoteEP)
+        private void HandleConnection(TAddress address)
         {
             Task.Run(() =>
             {
                 try
                 {
-                    byte[] handshakeMessage = _adapter.ReceiveFrom(remoteEP);
+                    byte[] handshakeData = _adapter.ReceiveFrom(address);
 
                     // TODO: обработка рукопожатия
-                    var session = new SecureSession(_adapter, remoteEP);
-                    _sessions[remoteEP] = session;
-
+                    var session = new SecureSession<TAddress>(_adapter, address);
+                    _sessions[address] = session;
                     OnSecureSessionEstablished?.Invoke(session);
                 }
                 catch
                 {
-                    Console.WriteLine($"Handshake failed with {remoteEP}");
+                    Console.WriteLine($"[!] Handshake failed with {address}");
                 }
             });
         }
 
-        public SecureSession Connect(EndPoint remoteEP)
+        public SecureSession<TAddress> Connect(TAddress address)
         {
-            // TODO: отправка и получение handshake
-            var session = new SecureSession(_adapter, remoteEP);
-            _sessions[remoteEP] = session;
-
+            // TODO: отправка handshake
+            var session = new SecureSession<TAddress>(_adapter, address);
+            _sessions[address] = session;
             return session;
         }
     }

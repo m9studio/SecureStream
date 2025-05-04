@@ -2,31 +2,32 @@
 
 namespace M9Studio.SecureStream
 {
-    public class SecureSession
+    public class SecureSession<TAddress>
     {
-        private readonly ISecureTransportAdapter _adapter;
-        private readonly EndPoint _remoteEP;
+        private readonly ISecureTransportAdapter<TAddress> _adapter;
+        private readonly TAddress _address;
 
-        public SecureSession(ISecureTransportAdapter adapter, EndPoint remoteEP)
+        public SecureSession(ISecureTransportAdapter<TAddress> adapter, TAddress address)
         {
             _adapter = adapter;
-            _remoteEP = remoteEP;
+            _address = address;
         }
 
-        public bool Send(byte[] plainData)
+        public bool Send(byte[] data)
         {
-            byte[] encrypted = Encrypt(plainData);
-            return _adapter.SendTo(encrypted, _remoteEP);
+            var encrypted = Encrypt(data);
+            return _adapter.SendTo(encrypted, _address);
         }
 
         public byte[] Receive()
         {
-            byte[] encrypted = _adapter.ReceiveFrom(_remoteEP);
+            var encrypted = _adapter.ReceiveFrom(_address);
             return Decrypt(encrypted);
         }
 
-        private byte[] Encrypt(byte[] data) => data;  // Заглушка
-        private byte[] Decrypt(byte[] data) => data;  // Заглушка
+        private byte[] Encrypt(byte[] data) => data;
+        private byte[] Decrypt(byte[] data) => data;
     }
+
 
 }
