@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using System.Net;
+using System.Text;
 
 namespace M9Studio.SecureStream
 {
@@ -23,26 +23,51 @@ namespace M9Studio.SecureStream
             {
                 try
                 {
-                    byte[] handshakeData = _adapter.ReceiveFrom(address);
+                    // Получаем первый пакет от удалённой стороны
+                    byte[] firstPacket = _adapter.ReceiveFrom(address);
 
-                    // TODO: обработка рукопожатия
-                    var session = new SecureSession<TAddress>(_adapter, address);
+                    SecureSession<TAddress> session;
+
+                    if (IsHandshakePacket(firstPacket))
+                    {
+                        // Это HELLO → обычное рукопожатие
+                        session = new SecureSession<TAddress>(_adapter, address);
+                    }
+                    else
+                    {
+                        // Это уже рабочее сообщение → буферизуем
+                        session = new SecureSession<TAddress>(_adapter, address, firstPacket);
+                    }
+
                     _sessions[address] = session;
+
+                    // Только теперь уведомляем внешнюю логику
                     OnSecureSessionEstablished?.Invoke(session);
                 }
-                catch
+                catch (Exception)
                 {
-                    Console.WriteLine($"[!] Handshake failed with {address}");
+                    // Обработка ошибок подключения (опционально)
                 }
             });
         }
 
         public SecureSession<TAddress> Connect(TAddress address)
         {
-            // TODO: отправка handshake
+            // Отправляем явное handshake-сообщение
+            byte[] handshakeInit = Encoding.UTF8.GetBytes("HELLO");
+            _adapter.SendTo(handshakeInit, address);
+
             var session = new SecureSession<TAddress>(_adapter, address);
             _sessions[address] = session;
+
             return session;
+        }
+
+        private bool IsHandshakePacket(byte[] data)
+        {
+            return data != null &&
+                   data.Length == 5 &&
+                   Encoding.UTF8.GetString(data) == "HELLO";
         }
     }
 }

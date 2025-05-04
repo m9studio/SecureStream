@@ -6,7 +6,7 @@
         private Dictionary<int, Queue<byte[]>> queue = new();
 
         static int count = 0;
-        int id;
+        public int id;
         public SecureTransportAdapter()
         {
             count++;
@@ -19,21 +19,21 @@
 
         public byte[] ReceiveFrom(int address)
         {
+            //Console.WriteLine($"[{id}] Waiting for data from {address}...");
             while (true)
             {
-                if (queue.ContainsKey(address))
+                if (queue.ContainsKey(address) && queue[address]?.Count > 0)
                 {
-                    if(queue[address] != null && queue[address].Count > 0)
-                    {
-                        return queue[address].Dequeue();
-                    }
+                    //Console.WriteLine($"[{id}] Received from {address}");
+                    return queue[address].Dequeue();
                 }
-                Thread.Sleep(10); // чтобы не жрать CPU
+                Thread.Sleep(10);
             }
         }
 
         public bool SendTo(byte[] buffer, int address)
         {
+            //Console.WriteLine($"[{id}] SendTo {address}, length = {buffer.Length}");
             if (connect.ContainsKey(address))
             {
                 connect[address].AddCache(buffer, id);
@@ -51,8 +51,11 @@
             {
                 queue.Add(address, new Queue<byte[]>());
                 OnConnected?.Invoke(address);
+                //Console.WriteLine($"[{id}] OnConnected: {address}");
             }
+
             queue[address].Enqueue(buffer);
+            //Console.WriteLine($"[{id}] Enqueued message from {address}");
         }
     }
 }
