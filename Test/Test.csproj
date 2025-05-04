@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>M9Studio.ShieldSocket.Test</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="ShieldSocket">
+      <HintPath>..\bin\Debug\net8.0\ShieldSocket.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
