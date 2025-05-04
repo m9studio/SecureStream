@@ -9,15 +9,15 @@
     <!-- NuGet package metadata -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>M9Studio.SecureStream</PackageId>
-    <Version>8.0.0</Version>
+    <Version>8.0.0.1</Version>
     <Authors>mina987</Authors>
     <Company>M9Studio</Company>
     <Copyright>© 2025 M9Studio</Copyright>
     <Description>Secure cryptographic tunnel abstraction with X25519 handshake and AES-GCM encryption. Lightweight alternative to TLS-like session protection.</Description>
     <PackageTags>encryption;TLS;AES;X25519;secure;stream;networking</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/m9studio/UdpLikeTcp</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/m9studio/UdpLikeTcp</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/m9studio/SecureStream</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/m9studio/SecureStream</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 	<PackageReleaseNotes>Initial release: secure encrypted tunnel with X25519 + AES-GCM. Supports pluggable transport adapter.</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
