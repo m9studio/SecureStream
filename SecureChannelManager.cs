@@ -52,14 +52,14 @@ namespace M9Studio.SecureStream
 
         public SecureSession<TAddress> Connect(TAddress address)
         {
-            Console.WriteLine($"[SecureChannelManager] Connecting to {address}...");
+            //Console.WriteLine($"[SecureChannelManager] Connecting to {address}...");
 
             var session = new SecureSession<TAddress>(_adapter, address);
             _sessions[address] = session;
 
             session.PerformHandshakeAsClient();
 
-            Console.WriteLine($"[SecureChannelManager] Handshake complete with {address}");
+            //Console.WriteLine($"[SecureChannelManager] Handshake complete with {address}");
 
             OnSecureSessionEstablished?.Invoke(session);
 

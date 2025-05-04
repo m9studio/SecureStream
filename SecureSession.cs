@@ -1,13 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Security.Cryptography;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Crypto.Utilities;
 
 namespace M9Studio.SecureStream
 {
@@ -27,7 +21,7 @@ namespace M9Studio.SecureStream
             _adapter = adapter;
             _address = address;
             _initialBuffer = initialBuffer;
-            Console.WriteLine($"[SecureSession] Created with remote address = {_address}");
+            //Console.WriteLine($"[SecureSession] Created with remote address = {_address}");
         }
 
         public void PerformHandshakeAsClient()
@@ -81,7 +75,7 @@ namespace M9Studio.SecureStream
             _aesGcm!.Encrypt(nonce, data, encrypted, tag);
             var payload = nonce.Concat(tag).Concat(encrypted).ToArray();
 
-            Console.WriteLine($"[{_address}] Send: {BitConverter.ToString(payload).Replace("-", "")}");
+            //Console.WriteLine($"[{_address}] Send: {BitConverter.ToString(payload).Replace("-", "")}");
             return _adapter.SendTo(payload, _address);
         }
 
@@ -89,7 +83,7 @@ namespace M9Studio.SecureStream
         {
             if (!_isHandshakeComplete) throw new InvalidOperationException("Handshake not complete.");
 
-            Console.WriteLine($"[SecureSession] Receive() waiting from {_address}");
+            //Console.WriteLine($"[SecureSession] Receive() waiting from {_address}");
 
             byte[] packet;
             if (_initialBuffer != null)
@@ -102,7 +96,7 @@ namespace M9Studio.SecureStream
                 packet = _adapter.ReceiveFrom(_address);
             }
 
-            Console.WriteLine($"[{_address}] Receive: {BitConverter.ToString(packet).Replace("-", "")}");
+            //Console.WriteLine($"[{_address}] Receive: {BitConverter.ToString(packet).Replace("-", "")}");
             return Decrypt(packet);
         }
 

@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace M9Studio.SecureStream
+﻿namespace M9Studio.SecureStream
 {
     public interface ISecureTransportAdapter<TAddress>
     {
@@ -10,6 +8,4 @@ namespace M9Studio.SecureStream
         bool SendTo(byte[] buffer, TAddress address);
         byte[] ReceiveFrom(TAddress address);
     }
-
-
 }
