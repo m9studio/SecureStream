@@ -2,6 +2,9 @@
 
 Encrypted session abstraction with TLS 1.3-style handshake and AES-GCM transport encryption.
 
+[![NuGet](https://img.shields.io/nuget/v/M9Studio.SecureStream.svg)](https://www.nuget.org/packages/M9Studio.SecureStream)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
 ## Features
 
 * Pluggable transport adapter (`ISecureTransportAdapter<TAddress>`) to abstract over sockets, in-memory channels, etc.
