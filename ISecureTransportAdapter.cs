@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace M9Studio.ShieldSocket
+namespace M9Studio.SecureStream
 {
     public interface ISecureTransportAdapter
     {

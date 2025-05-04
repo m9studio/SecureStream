@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>M9Studio.ShieldSocket.Test</RootNamespace>
+    <RootNamespace>M9Studio.SecureStream.Test</RootNamespace>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="ShieldSocket">
-      <HintPath>..\bin\Debug\net8.0\ShieldSocket.dll</HintPath>
+    <Reference Include="SecureStream">
+      <HintPath>..\bin\Debug\net8.0\SecureStream.dll</HintPath>
     </Reference>
   </ItemGroup>
 

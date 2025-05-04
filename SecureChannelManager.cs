@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Net;
 
-namespace M9Studio.ShieldSocket
+namespace M9Studio.SecureStream
 {
     public class SecureChannelManager
     {

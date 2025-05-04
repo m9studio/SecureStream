@@ -1,4 +1,4 @@
-﻿namespace M9Studio.ShieldSocket.Test
+﻿namespace M9Studio.SecureStream.Test
 {
     partial class Program
     {
