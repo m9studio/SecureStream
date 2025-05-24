@@ -61,8 +61,6 @@ namespace M9Studio.SecureStream
 
             //Console.WriteLine($"[SecureChannelManager] Handshake complete with {address}");
 
-            OnSecureSessionEstablished?.Invoke(session);
-
             return session;
         }
 

@@ -15,6 +15,7 @@ namespace M9Studio.SecureStream
         private X25519PublicKeyParameters? _remotePublicKey;
         private AesGcm? _aesGcm;
         private bool _isHandshakeComplete = false;
+        public TAddress RemoteAddress => _address;
 
         public SecureSession(ISecureTransportAdapter<TAddress> adapter, TAddress address, byte[]? initialBuffer = null)
         {
@@ -24,7 +25,7 @@ namespace M9Studio.SecureStream
             //Console.WriteLine($"[SecureSession] Created with remote address = {_address}");
         }
 
-        public void PerformHandshakeAsClient()
+        internal void PerformHandshakeAsClient()
         {
             var secureRandom = new SecureRandom();
             _privateKey = new X25519PrivateKeyParameters(secureRandom);
@@ -38,7 +39,7 @@ namespace M9Studio.SecureStream
             _isHandshakeComplete = true;
         }
 
-        public void PerformHandshakeAsServer(byte[] clientPublicKey)
+        internal void PerformHandshakeAsServer(byte[] clientPublicKey)
         {
             _remotePublicKey = new X25519PublicKeyParameters(clientPublicKey, 0);
             var secureRandom = new SecureRandom();
@@ -111,6 +112,5 @@ namespace M9Studio.SecureStream
             return decrypted;
         }
 
-        public TAddress RemoteAddress => _address;
     }
 }
