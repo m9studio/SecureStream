@@ -34,7 +34,10 @@ manager.OnSecureSessionEstablished += session =>
     Console.WriteLine("Decrypted: " + Encoding.UTF8.GetString(response));
 };
 
-manager.Connect(remoteAddress);
+var session2 = manager.Connect(remoteAddress);
+session2.Send(Encoding.UTF8.GetBytes("Hello securely"));
+var response2 = session2.Receive();
+Console.WriteLine("Decrypted: " + Encoding.UTF8.GetString(response2));
 ```
 
 ## Interface
