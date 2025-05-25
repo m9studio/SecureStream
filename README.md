@@ -27,11 +27,15 @@ dotnet add package M9Studio.SecureStream
 var adapter = new MyTransportAdapter();
 var manager = new SecureChannelManager<MyAddressType>(adapter);
 
-manager.OnSecureSessionEstablished += session =>
+manager.OnConnected += session =>
 {
     session.Send(Encoding.UTF8.GetBytes("Hello securely"));
     var response = session.Receive();
     Console.WriteLine("Decrypted: " + Encoding.UTF8.GetString(response));
+};
+manager.OnDisconnected += session =>
+{
+    //Disconnected
 };
 
 var session2 = manager.Connect(remoteAddress);
