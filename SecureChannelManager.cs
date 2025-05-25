@@ -7,13 +7,14 @@ namespace M9Studio.SecureStream
         private readonly ISecureTransportAdapter<TAddress> _adapter;
         private readonly ConcurrentDictionary<TAddress, SecureSession<TAddress>> _sessions = new();
 
-        public event Action<SecureSession<TAddress>>? OnSecureSessionEstablished;
+        public event Action<SecureSession<TAddress>>? OnConnected;
+        public event Action<SecureSession<TAddress>>? OnDisconnected;
 
         public SecureChannelManager(ISecureTransportAdapter<TAddress> adapter)
         {
             _adapter = adapter;
             _adapter.OnConnected += HandleConnection;
-            _adapter.OnDisconnected += address => _sessions.TryRemove(address, out _);
+            _adapter.OnDisconnected += Disconnected;
         }
 
         private void HandleConnection(TAddress address)
@@ -36,7 +37,7 @@ namespace M9Studio.SecureStream
 
                         session.PerformHandshakeAsServer(firstPacket);
 
-                        OnSecureSessionEstablished?.Invoke(session);
+                        OnConnected?.Invoke(session);
                     }
                     else
                     {
@@ -48,6 +49,15 @@ namespace M9Studio.SecureStream
                     // Лог ошибок (опционально)
                 }
             });
+        }
+        private void Disconnected(TAddress address)
+        {
+            SecureSession<TAddress>? session = null;
+            _sessions.TryRemove(address, out session);
+            if(session != null)
+            {
+                session._IsLive = false;
+            }
         }
 
         public SecureSession<TAddress> Connect(TAddress address)

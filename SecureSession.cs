@@ -17,6 +17,9 @@ namespace M9Studio.SecureStream
         private bool _isHandshakeComplete = false;
         public TAddress RemoteAddress => _address;
 
+        internal bool _IsLive = true;
+        public bool IsLive => _IsLive;
+
         public SecureSession(ISecureTransportAdapter<TAddress> adapter, TAddress address, byte[]? initialBuffer = null)
         {
             _adapter = adapter;
@@ -67,6 +70,7 @@ namespace M9Studio.SecureStream
 
         public bool Send(byte[] data)
         {
+            if (!IsLive) throw new InvalidOperationException("Session not live.");
             if (!_isHandshakeComplete) throw new InvalidOperationException("Handshake not complete.");
 
             var nonce = RandomNumberGenerator.GetBytes(12);
