@@ -5,7 +5,7 @@ using Org.BouncyCastle.Security;
 
 namespace M9Studio.SecureStream
 {
-    public class SecureSession<TAddress>
+    public class SecureSession<TAddress> 
     {
         private readonly ISecureTransportAdapter<TAddress> _adapter;
         private readonly TAddress _address;
@@ -14,6 +14,7 @@ namespace M9Studio.SecureStream
         private X25519PrivateKeyParameters? _privateKey;
         private X25519PublicKeyParameters? _remotePublicKey;
         private AesGcm? _aesGcm;
+
         private bool _isHandshakeComplete = false;
         public TAddress RemoteAddress => _address;
 

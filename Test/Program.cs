@@ -8,13 +8,12 @@
             var clientAdapter = new SecureTransportAdapter(); // id == 2
 
             var server = new SecureChannelManager<int>(serverAdapter);
-            server.OnSecureSessionEstablished += Server_OnSecureSessionEstablished;
+            server.OnConnected += Server_OnSecureSessionEstablished;
 
             var client = new SecureChannelManager<int>(clientAdapter);
-            client.OnSecureSessionEstablished += Client_OnSecureSessionEstablished;
 
             // Инициируем подключение: клиент должен послать "handshake"
-            client.Connect(serverAdapter.id);
+            Client_OnSecureSessionEstablished(client.Connect(serverAdapter.id));
 
             Console.ReadLine();
         }

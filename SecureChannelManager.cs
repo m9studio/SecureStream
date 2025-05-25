@@ -53,10 +53,10 @@ namespace M9Studio.SecureStream
         private void Disconnected(TAddress address)
         {
             SecureSession<TAddress>? session = null;
-            _sessions.TryRemove(address, out session);
-            if(session != null)
+            if(_sessions.TryRemove(address, out session))
             {
                 session._IsLive = false;
+                OnDisconnected?.Invoke(session);
             }
         }
 
